@@ -1,7 +1,7 @@
 """
 `BibTeX <http://en.wikipedia.org/wiki/BibTeX>`_ is a bibliographic data file format.
 
-The :mod:`bibtexparser` module can parse BibTeX files and write them. The API is similar to the
+The :mod:`pybib` module can parse BibTeX files and write them. The API is similar to the
 :mod:`json` module. The parsed data is returned as a simple :class:`BibDatabase` object with the main attribute being
 :attr:`entries` representing bibliographic sources such as books and journal articles.
 
@@ -10,15 +10,15 @@ More advanced features are also available in this module.
 
 Parsing a file is as simple as::
 
-    import bibtexparser
+    import pybib
     with open('bibtex.bib') as bibtex_file:
-       bibtex_database = bibtexparser.load(bibtex_file)
+       bibtex_database = pybib.load(bibtex_file)
 
 And writing::
 
-    import bibtexparser
+    import pybib
     with open('bibtex.bib', 'w') as bibtex_file:
-        bibtexparser.dump(bibtex_database, bibtex_file)
+        pybib.dump(bibtex_database, bibtex_file)
 
 """
 __all__ = [
@@ -27,7 +27,10 @@ __all__ = [
 ]
 __version__ = '0.6.2'
 
-from . import bibdatabase, bibtexexpression, bparser, bwriter, latexenc, customization
+from . import bibdatabase, bibtexexpression, bparser, bwriter, latexenc, \
+              customization
+
+from .bparser import BibTexParser
 
 
 def loads(bibtex_str, parser=None):
@@ -59,9 +62,9 @@ def load(bibtex_file, parser=None):
 
     Example::
 
-        import bibtexparser
+        import pybib
         with open('bibtex.bib') as bibtex_file:
-           bibtex_database = bibtexparser.load(bibtex_file)
+           bibtex_database = pybib.load(bibtex_file)
 
     """
     if parser is None:
@@ -98,9 +101,9 @@ def dump(bib_database, bibtex_file, writer=None):
 
     Example::
 
-        import bibtexparser
+        import pybib
         with open('bibtex.bib', 'w') as bibtex_file:
-            bibtexparser.dump(bibtex_database, bibtex_file)
+            pybib.dump(bibtex_database, bibtex_file)
 
     """
     if writer is None:

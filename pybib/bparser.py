@@ -11,8 +11,8 @@ import sys
 import io
 import logging
 
-from bibtexparser.bibdatabase import BibDatabase, BibDataString, STANDARD_TYPES
-from bibtexparser.bibtexexpression import BibtexExpression
+from pybib.bibdatabase import BibDatabase, BibDataString, STANDARD_TYPES
+from pybib.bibtexexpression import BibtexExpression
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +36,7 @@ class BibTexParser(object):
 
     Example::
 
-        from bibtexparser.bparser import BibTexParser
+        from pybib.bparser import BibTexParser
 
         bibtex_str = ...
 
@@ -44,7 +44,7 @@ class BibTexParser(object):
         parser.ignore_nonstandard_types = False
         parser.homogenize_fields = False
         parser.common_strings = False
-        bib_database = bibtexparser.loads(bibtex_str, parser)
+        bib_database = pybib.loads(bibtex_str, parser)
 
     """
 
@@ -134,7 +134,7 @@ class BibTexParser(object):
                 raise exc
         return self.bib_database
 
-    def parse_file(self, file, partial=False):
+    def parse_file(self, in_file, partial=False):
         """Parse a BibTeX file into an object
 
         :param file: BibTeX file or file-like object
@@ -145,7 +145,12 @@ class BibTexParser(object):
         :return: bibliographic database
         :rtype: BibDatabase
         """
-        return self.parse(file.read(), partial=partial)
+        if not isinstance(in_file, file):
+            with open(in_file) as fp:
+                out = self.parse(fp.read(), partial=partial)
+        else:
+            out = self.parse(fp.read(), partial=partial)
+        return out
 
     def _init_expressions(self):
         """

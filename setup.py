@@ -6,20 +6,20 @@ except ImportError as ex:
     print('[python-bibtexparser] setuptools not found. Falling back to distutils.core')
     from distutils.core import setup
 
-with open('bibtexparser/__init__.py') as fh:
+with open('pybib/__init__.py') as fh:
     for line in fh:
         if line.startswith('__version__'):
             version = line.strip().split()[-1][1:-1]
             break
 
 setup(
-    name         = 'bibtexparser',
+    name         = 'pybib',
     version      = version,
     url          = "https://github.com/sciunto-org/python-bibtexparser",
     author       = "Francois Boulogne and other contributors",
     license      = "LGPLv3 or BSD",
     author_email = "devel@sciunto.org",
     description  = "Bibtex parser for python 2.7 and 3.3 and newer",
-    packages     = ['bibtexparser'],
+    packages     = ['pybib'],
     install_requires = ['pyparsing'],
 )

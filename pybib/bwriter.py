@@ -4,7 +4,7 @@
 # License:
 
 import logging
-from bibtexparser.bibdatabase import BibDatabase
+from pybib.bibdatabase import BibDatabase
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +24,7 @@ class BibTexWriter(object):
 
     Example::
 
-        from bibtexparser.bwriter import BibTexWriter
+        from pybib.bwriter import BibTexWriter
 
         bib_database = ...
 
@@ -32,7 +32,7 @@ class BibTexWriter(object):
         writer.contents = ['comments', 'entries']
         writer.indent = '  '
         writer.order_entries_by = ('ENTRYTYPE', 'author', 'year')
-        bibtex_str = bibtexparser.dumps(bib_database, writer)
+        bibtex_str = pybib.dumps(bib_database, writer)
 
     """
 
