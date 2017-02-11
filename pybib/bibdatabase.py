@@ -1,7 +1,6 @@
 from collections import OrderedDict
 import sys
 
-
 if sys.version_info.major == 2:
     TEXT_TYPE = unicode
 else:
@@ -39,6 +38,22 @@ COMMON_STRINGS = {
     }
 
 
+class Entries(list):
+    def __init__(self, *args, **kwargs):
+        super(Entries, self).__init__(*args, **kwargs)
+
+        self.index = {}
+        self.duplicates = {}
+
+    def append(self, k):
+        super(Entries, self).append(k)
+        if k.ID in self.index:
+            self.duplicates.setdefault(k.ID, []).append(k)
+        else:
+            self.index[k.ID] = k
+
+
+
 class BibDatabase(object):
     """
     Bibliographic database object that follows the data structure of a BibTeX file.
@@ -50,7 +65,7 @@ class BibDatabase(object):
         #:
         #: * `ID` (BibTeX key)
         #: * `ENTRYTYPE` (entry type in lowercase, e.g. `book`, `article` etc.)
-        self.entries = []
+        self.entries = Entries()
         self._entries_dict = {}
         #: List of BibTeX comment (`@comment{...}`) blocks.
         self.comments = []
@@ -96,6 +111,20 @@ class BibDatabase(object):
             return self.strings[name]
         except KeyError:
             raise(KeyError("Unknown string: {}.".format(name)))
+
+    def __str__(self):
+        return "BibTexDatabase <{} entries>".format(len(self.entries))
+
+    def __repr__(self):
+        return str(self)
+
+    def __getitem__(self, k):
+        if isinstance(k, (int, slice)):
+            return self.entries[k]
+        else:
+            raise KeyError("Not supporting non-integer keys yet")
+
+
 
 
 class BibDataString(object):

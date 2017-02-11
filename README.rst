@@ -1,5 +1,18 @@
-python-bibtexparser
-===================
+pybib
+=====
+
+Note: the below is the original documentation.  I've switched some things around,
+added some stuff, renamed things.
+
+I don't recommend you use this library =).
+
+
+
+
+
+
+
+----------------------
 
 Python library to parse `bibtex <https://en.wikipedia.org/wiki/BibTeX>`_ files.
 

@@ -11,7 +11,8 @@ import itertools
 import re
 import logging
 
-from bibtexparser.latexenc import unicode_to_latex, unicode_to_crappy_latex1, unicode_to_crappy_latex2, string_to_latex, protect_uppercase
+from pybib.latexenc import unicode_to_latex, unicode_to_crappy_latex1, \
+                           unicode_to_crappy_latex2, string_to_latex, protect_uppercase
 
 logger = logging.getLogger(__name__)
 
@@ -537,3 +538,60 @@ def homogenize_latex_encoding(record):
                 record[val] = protect_uppercase(record[val])
                 logger.debug('After: %s', record[val])
     return record
+
+
+class Generic(object):
+    def __init__(self, config=None):
+        config = config or {}
+        self.__dict__.update(config)
+
+class GenericPlus(Generic):
+    def __init__(self, config):
+
+        process_k = lambda k: k[:-1] if k[-1] == "_" else k
+        process_v = lambda k, v: GenericPlus(v) if k[-1]=="_" else v
+        config = {process_k(k):process_v(k,v) for k, v in config.items()}
+
+        super(GenericPlus, self).__init__(config)
+
+        self._contents = config.keys()
+
+
+    def __getitem__(self, k):
+        return self.__dict__[k]
+
+    def __setitem__(self, k, v):
+        self.__dict__[k] = v
+
+    def __iter__(self):
+        return (self.__dict__[c] for c in self._contents)
+
+    def next(self):
+        out = self._contents[self._i]
+        self._i += 1
+        return out
+
+    def items(self):
+        return zip(self._contents, self)
+
+    def verbose_strings(self):
+        return ["{} -> {}".format(k, v) for k,v in self.__dict__.items()]
+
+class BibEntry(GenericPlus):
+    _fix = lambda s: s.encode('utf-8').replace("\n","")
+    _default_fields = ['link', 'title', 'author', 'abstract', 'notes', 'year']
+
+    @classmethod
+    def from_file(cls, record):
+        def _fix(s):
+            return
+        out = {k:'Empty' for k in cls._default_fields}
+        out['link'] = "#"
+        out.update(convert_to_unicode(record))
+        return cls(out)
+
+    def __str__(self):
+        return "[{}][{}]".format(self.ENTRYTYPE, self.ID)
+
+    def __repr__(self):
+        return str(self)
